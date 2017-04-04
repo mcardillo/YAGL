@@ -1,6 +1,7 @@
 {
     "description":"Dodecahedron",
     "graphicsFramework":"Babylonjs",
+    "directed": true,
     "vertexMesh":{
         "meshName":"Cube",
         "rootUrl":"http://demo.yagljs.com/assets/",
