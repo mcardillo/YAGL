@@ -2,7 +2,7 @@
     "description": String,
     "graphicsFramework": "BabylonJS",
     "layout": "User Defined"|"Force Directed",
-    "directed": boolean,
+    "directed": Boolean,
     "vertexMesh": {
         "meshName": String,
         "rootUrl": String,
