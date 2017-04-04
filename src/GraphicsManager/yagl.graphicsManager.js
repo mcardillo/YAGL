@@ -103,6 +103,8 @@ var YAGL;
             path.push(e.v2.mesh.position);
 
             e.mesh = this.createTube(eid, path);
+            if(getProperty(this.spec, "directed", false))
+               this.addArrow(e.v2.mesh.position, e.v1.mesh.position);
             //this.updateLayout();
         };
 
@@ -122,6 +124,50 @@ var YAGL;
             mesh.material.diffuseColor = new BABYLON.Color3(rgb[0], rgb[1], rgb[2]);
 
             return mesh;
+        };
+        
+        // addArrow takes in two vectors, the second of which is the location the cone will point to 
+        GraphicsManager.prototype.addArrow = function (vecFrom, vecTo) {
+      
+            // create a new point to serve as the end point of the cone      
+            var coneEnd = vecTo.subtract(vecFrom);
+
+      
+            // determine scale of cone endpoint      
+            coneEnd.x /= 9;      
+            coneEnd.y /= 9;      
+            coneEnd.z /= 9;
+
+            // add vecEnd to get final position vector, finish the calculus      
+            coneEnd = coneEnd.add(vecFrom);
+      
+            // create length variable for the cone      
+            var length = BABYLON.Vector3.Distance(vecFrom, coneEnd);
+      
+            // create cone mesh      
+            var cone = BABYLON.Mesh.CreateCylinder(null, length, 0, .8, 36, scene, true);
+      
+            // move pivot point from center of cone to the point of the cone      
+            cone.setPivotMatrix(BABYLON.Matrix.Translation(0, -length / 2, 0));
+      
+            // move cone to the sphere location
+            cone.position = vecTo;
+      
+            // create two vectors to become axis points      
+            var t1 = vecFrom.subtract(vecTo);      
+            t1.normalize();      
+            var t2 = new BABYLON.Vector3(0, 1, 0);
+
+      
+            // create an axis to align the cone on
+            var axis = BABYLON.Vector3.Cross(t1, t2);      
+            axis.normalize();
+            
+            // create an angle to align the cone with      
+            var angle = BABYLON.Vector3.Dot(t1, t2);
+      
+            // align the cone using the created axis and angle      
+            cone.rotationQuaternion = BABYLON.Quaternion.RotationAxis(axis,  Math.PI / 2 + angle);
         };
 
         GraphicsManager.prototype.updateLayout = function () {
